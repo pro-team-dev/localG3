@@ -53,10 +53,16 @@ const OnGoing = () => {
   }, [locationData]);
 
   return (
+<<<<<<< HEAD
 
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
         {(locationArr && !isNaN(locationArr.lat)) && (
+=======
+    <View style={{ height: Dimensions.get("window").height - 130 }}>
+      <View style={{ flex: 1 }}>
+        {locationArr && (
+>>>>>>> bd066c0ecb64af8721de7ee757537f3ea1637297
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
