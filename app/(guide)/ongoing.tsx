@@ -5,6 +5,7 @@ import MapsComponent from "../../components/mapsComponent";
 import useGuideUserSocketStore from "../globalStore/guideSocketStore";
 import CustomButton from "../../components/CustomButton";
 import useLocation from "../hooks/useLocation";
+import { ScrollView } from "react-native-gesture-handler";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -52,8 +53,9 @@ const OnGoing = () => {
   }, [locationData]);
 
   return (
-    <View style={{ height: Dimensions.get("window").height - 130 }}>
-      <View style={{ flex: 1 }}>
+
+    <View style={{ height: Dimensions.get("window").height / 3 }}>
+      <View>
         {(locationArr && !isNaN(locationArr.lat)) && (
           <MapsComponent
             locations={[locationArr]}
@@ -133,43 +135,48 @@ const Card = (props: { data: any }) => {
     }
   };
   return (
-    <View style={[styles.card, { marginTop: 10 }]}>
-      <Text style={styles.text}>Location: {data.locations[0].name}</Text>
-      <Text style={styles.text}>Status: {data.status}</Text>
-      <Text style={styles.text}>Price: {data.price}</Text>
-      <Text style={styles.text}>Duration: {data.duration}</Text>
-      <Text style={styles.text}>No. of People: {data.no_of_people}</Text>
-      <Text style={styles.text}>
-        Travel Coverage: {data.travel_coverage ? "Yes" : "No"}
-      </Text>
-      <Text style={styles.text}>
-        Food Coverage: {data.food_coverage ? "Yes" : "No"}
-      </Text>
-      <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
-      <Text style={styles.text}>Tourist: {data.tourist}</Text>
-      <View
-        style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
-      >
-        <CustomButton
-          style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
-          title="Cancel"
-          onPress={() => handleCancel()}
-        />
-        <CustomButton
-          style={{ width: 150 }}
-          title="Complete"
-          onPress={() => handleComplte()}
-        />
-      </View>
+    <View style={styles.card}>
+      <ScrollView>
+        <Text style={styles.text}>Location: {data.locations[0].name}</Text>
+        <Text style={styles.text}>Status: {data.status}</Text>
+        <Text style={styles.text}>Price: {data.price}</Text>
+        <Text style={styles.text}>Duration: {data.duration}</Text>
+        <Text style={styles.text}>No. of People: {data.no_of_people}</Text>
+        <Text style={styles.text}>
+          Travel Coverage: {data.travel_coverage ? "Yes" : "No"}
+        </Text>
+        <Text style={styles.text}>
+          Food Coverage: {data.food_coverage ? "Yes" : "No"}
+        </Text>
+        <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
+        <Text style={styles.text}>Tourist: {data.tourist}</Text>
+        <View
+          style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
+        >
+          <CustomButton
+            style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
+            title="Cancel"
+            onPress={() => handleCancel()}
+          />
+          <CustomButton
+            style={{ width: 150 }}
+            title="Complete"
+            onPress={() => handleComplte()}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
+    height: Dimensions.get("window").height / 2,
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 16,
+    paddingLeft: 15,
+    paddingTop: 8,
+    paddingBottom: 10,
     marginBottom: 16,
     shadowColor: "#000",
     shadowOffset: {
@@ -181,7 +188,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   text: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 8,
   },
 });

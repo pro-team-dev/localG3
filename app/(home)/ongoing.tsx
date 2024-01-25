@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import useUserSocketStore from "../globalStore/websocketStore";
 import MapsComponent from "../../components/mapsComponent";
-import CustomButton from "../../components/CustomButton";
+import { ScrollView } from "react-native-gesture-handler";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -53,9 +53,9 @@ const OnGoing = () => {
   }, [location]);
 
   return (
-    <View style={{ height: Dimensions.get("window").height - 130 }}>
-      <View style={{ flex: 1 }}>
-        {(locationArr && !isNaN(locationArr.lat)) && <MapsComponent
+    <View style={{ height: Dimensions.get("window").height / 3 }}>
+      <View>
+        {(locationArr && locationArr.lat) && <MapsComponent
           locations={[locationArr]}
           cameraLocation={[locationArr.lng, locationArr.lat]}
         />}
@@ -68,46 +68,38 @@ const OnGoing = () => {
 const Card = ({ data }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.text}>Location: {data.locations[0].name}</Text>
-      <Text style={styles.text}>Status: {data.status}</Text>
-      <Text style={styles.text}>Price: {data.price}</Text>
-      <Text style={styles.text}>Duration: {data.duration}</Text>
-      <Text style={styles.text}>No. of People: {data.no_of_people}</Text>
-      <Text style={styles.text}>
-        Travel Coverage: {data.travel_coverage ? "Yes" : "No"}
-      </Text>
-      <Text style={styles.text}>
-        Food Coverage: {data.food_coverage ? "Yes" : "No"}
-      </Text>
-      <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
-      {/* <Text style={styles.text}>Created At: {data.created_at}</Text> */}
-      {/* <Text style={styles.text}>Updated At: {data.updated_at}</Text> */}
-      {/* <Text style={styles.text}>Tourist: {data.tourist}</Text> */}
-      <Text style={styles.text}>Guide: {data.guide}</Text>
-      {/* <Text style={styles.text}>Offer: {data.offer[0]}</Text> */}
-      <View
-        style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
-      >
-        <CustomButton
-          style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
-          title="Cancel"
-        // onPress={() => handleCancel()}
-        />
-        <CustomButton
-          style={{ width: 150 }}
-          title="Complete"
-        // onPress={() => handleComplte()}
-        />
-      </View>
+      <ScrollView>
+        <Text style={styles.text}>Tour ID: {data.tour_id}</Text>
+        <Text style={styles.text}>Location: {data.locations[0].name}</Text>
+        <Text style={styles.text}>Status: {data.status}</Text>
+        <Text style={styles.text}>Price: {data.price}</Text>
+        <Text style={styles.text}>Duration: {data.duration}</Text>
+        <Text style={styles.text}>No. of People: {data.no_of_people}</Text>
+        <Text style={styles.text}>
+          Travel Coverage: {data.travel_coverage ? "Yes" : "No"}
+        </Text>
+        <Text style={styles.text}>
+          Food Coverage: {data.food_coverage ? "Yes" : "No"}
+        </Text>
+        <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
+        <Text style={styles.text}>Created At: {data.created_at}</Text>
+        <Text style={styles.text}>Updated At: {data.updated_at}</Text>
+        <Text style={styles.text}>Tourist: {data.tourist}</Text>
+        <Text style={styles.text}>Guide: {data.guide}</Text>
+        <Text style={styles.text}>Offer: {data.offer[0]}</Text>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
+    height: Dimensions.get("window").height / 2,
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 16,
+    paddingLeft: 15,
+    paddingTop: 8,
+    paddingBottom: 8,
     marginBottom: 16,
     shadowColor: "#000",
     shadowOffset: {
@@ -119,7 +111,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   text: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 8,
   },
 });
