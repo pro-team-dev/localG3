@@ -91,36 +91,36 @@ export default function AppLayout() {
   }, [data]);
   const config = {};
 
-  // const { locate, location } = useLocation();
-  // const sendLocation = async () => {
-  //   try {
-  //     await locate();
-  //     sendWebSocket(
-  //       JSON.stringify({
-  //         tour_id: tour.tour_id,
-  //         location_data: {
-  //           current_location: JSON.stringify({
-  //             lat: location?.coords.latitude,
-  //             lng: location?.coords.longitude,
-  //           }),
-  //         },
-  //       })
-  //     );
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const { locate, location } = useLocation();
+  const sendLocation = async () => {
+    try {
+      await locate();
+      sendWebSocket(
+        JSON.stringify({
+          tour_id: tour.tour_id,
+          location_data: {
+            current_location: JSON.stringify({
+              lat: location?.coords.latitude,
+              lng: location?.coords.longitude,
+            }),
+          },
+        })
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  // useEffect(() => {
-  //   if (tour && tour.tour_id) {
-  //     let id = setInterval(() => {
-  //       sendLocation();
-  //     }, 1000);
-  //     return () => {
-  //       clearInterval(id);
-  //     };
-  //   }
-  // });
+  useEffect(() => {
+    if (tour && tour.tour_id) {
+      let id = setInterval(() => {
+        sendLocation();
+      }, 1000);
+      return () => {
+        clearInterval(id);
+      };
+    }
+  });
 
   return (
     <>
