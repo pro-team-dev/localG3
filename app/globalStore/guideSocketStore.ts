@@ -5,7 +5,7 @@ interface GuideUserSocketStore {
   connectWebSocket: (userId: string) => void;
   disconnectWebSocket: () => void;
   sendWebSocket: (message: any) => void;
-  location: { lat: number | null, lng: number | null };
+  location: { lat: number | null; lng: number | null };
 }
 
 const useGuideUserSocketStore = create<GuideUserSocketStore>((set) => {
@@ -32,9 +32,9 @@ const useGuideUserSocketStore = create<GuideUserSocketStore>((set) => {
             set((state) => ({
               location: {
                 lat: l.lat,
-                lng: l.lng
-              }
-            }))
+                lng: l.lng,
+              },
+            }));
           }
         }
 
@@ -53,11 +53,12 @@ const useGuideUserSocketStore = create<GuideUserSocketStore>((set) => {
       }
     },
     sendWebSocket: (message: any) => {
+      // console.log("WebSocket message sent:", message);
       if (socket) {
         socket.send(message);
       }
     },
-    location: { lat: null, lng: null }
+    location: { lat: null, lng: null },
   };
 
   set(initialState);

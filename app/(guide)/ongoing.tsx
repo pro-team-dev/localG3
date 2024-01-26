@@ -11,7 +11,6 @@ const OnGoing = () => {
   const { jwtToken } = useJwtToken();
   const { data: render, location: locationData } = useGuideUserSocketStore();
 
-
   useEffect(() => {
     async function getOnGoing() {
       try {
@@ -55,10 +54,12 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height - 130 }}>
       <View style={{ flex: 1 }}>
-        <MapsComponent
-          locations={locationArr}
-          cameraLocation={[locationArr.lng, locationArr.lat]}
-        />
+        {locationArr && (
+          <MapsComponent
+            locations={[locationArr]}
+            cameraLocation={[locationArr.lng, locationArr.lat]}
+          />
+        )}
       </View>
       {data && <Card data={data} />}
     </View>

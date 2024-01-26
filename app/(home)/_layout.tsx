@@ -54,7 +54,7 @@ export default function AppLayout() {
     getOnGoing();
   }, [data]);
 
-  const { locate, location } = useLocationTest();
+  const { locate, location } = useLocation();
   const sendLocation = async () => {
     try {
       await locate();
