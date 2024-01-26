@@ -44,18 +44,20 @@ const OnGoing = () => {
 
   useEffect(() => {
     if (location) {
-      setLocationArr(location);
-      console.log(location);
+      if (location.lat) {
+        setLocationArr(location);
+        console.log(location);
+      }
     }
   }, [location]);
 
   return (
     <View>
       <View>
-        <MapsComponent
-          locations={locationArr}
+        {(locationArr && locationArr.lat) && <MapsComponent
+          locations={[locationArr]}
           cameraLocation={[locationArr.lng, locationArr.lat]}
-        />
+        />}
       </View>
       {data && <Card data={data} />}
     </View>
