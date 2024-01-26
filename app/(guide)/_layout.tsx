@@ -5,12 +5,12 @@ import { View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
-import useLocation from "../hooks/useLocation";
 import useAuth from "../hooks/useAuth";
 import useGuideUserSocketStore from "../globalStore/guideSocketStore";
 import { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import useTourStore from "../globalStore/tourStore";
+import useLocation from "../hooks/useLocation";
 
 export default function AppLayout() {
   const { logout, user } = useAuth();

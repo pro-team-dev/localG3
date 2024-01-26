@@ -53,7 +53,6 @@ const useGuideUserSocketStore = create<GuideUserSocketStore>((set) => {
       }
     },
     sendWebSocket: (message: any) => {
-      // console.log("WebSocket message sent:", message);
       if (socket) {
         socket.send(message);
       }
