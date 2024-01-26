@@ -55,10 +55,12 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height - 130 }}>
       <View style={{ flex: 1 }}>
-        {(locationArr && !isNaN(locationArr.lat)) && <MapsComponent
-          locations={[locationArr]}
-          cameraLocation={[locationArr.lng, locationArr.lat]}
-        />}
+        {locationArr && (
+          <MapsComponent
+            locations={[locationArr]}
+            cameraLocation={[locationArr.lng, locationArr.lat]}
+          />
+        )}
       </View>
       {data && <Card data={data} />}
     </View>
@@ -91,12 +93,12 @@ const Card = ({ data }) => {
         <CustomButton
           style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
           title="Cancel"
-        // onPress={() => handleCancel()}
+          // onPress={() => handleCancel()}
         />
         <CustomButton
           style={{ width: 150 }}
           title="Complete"
-        // onPress={() => handleComplte()}
+          // onPress={() => handleComplte()}
         />
       </View>
     </View>
