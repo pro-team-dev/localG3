@@ -12,6 +12,7 @@ import { useJwtToken } from "../globalStore/globalStore";
 import useTourStore from "../globalStore/tourStore";
 import useLocation from "../hooks/useLocation";
 
+
 export default function AppLayout() {
   const { logout, user } = useAuth();
   const jwtToken = useJwtToken((state) => state.jwtToken);
@@ -20,6 +21,8 @@ export default function AppLayout() {
   const [showNotification, setShowNotification] = useState(false);
 
   const tour = useTourStore();
+
+
   useEffect(() => {
     const getOnGoing = async () => {
       try {
@@ -124,6 +127,7 @@ export default function AppLayout() {
 
   return (
     <>
+
       {showNotification && (
         <View
           style={{
@@ -136,8 +140,11 @@ export default function AppLayout() {
           }}
         >
           <Text style={{ color: "white" }}>You have Notifications</Text>
-        </View>
-      )}
+        </View >
+      )
+      }
+
+
       <Tabs
         screenOptions={{
           tabBarStyle: {

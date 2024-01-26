@@ -1,68 +1,52 @@
 import { create } from "zustand";
 
+interface Message {
+  sender: string;
+  content: string;
+}
+
 interface UserSocketStore {
-  data: string[]; // Add your desired type for the data property
+  messages: Message[];
   connectWebSocket: (userId: string) => void;
   disconnectWebSocket: () => void;
-  sendWebSocket: (message: any) => void;
-  location: { lat: number | null, lng: number | null };
+  sendWebSocket: (message: string) => void;
 }
 
 const useUserSocketStore = create<UserSocketStore>((set) => {
   let socket: WebSocket | null = null;
 
-  const initialState: UserSocketStore = {
-    data: [],
-    connectWebSocket: (userId: string) => {
-      const wsUrl = `ws://api.localg.biz/ws/tourist-tour/${userId}`;
+  const connectWebSocket = (userId: string) => {
+    const wsUrl = `ws://api.localg.biz/ws/tourist-tour/${userId}`;
+    socket = new WebSocket(wsUrl);
 
-      socket = new WebSocket(wsUrl);
+    socket.onopen = () => {
+      console.log("WebSocket connection opened");
+    };
 
-      // Set up event listeners for the WebSocket connection
-      socket.addEventListener("open", () => {
-        console.log("WebSocket connection opened");
-      });
+    socket.onmessage = (event) => {
+      const newMessage: Message = JSON.parse(event.data);
+      set((state) => ({ messages: [...state.messages, newMessage] }));
+    };
 
-      socket.addEventListener("message", (event) => {
-        console.log("WebSocket message received:", event.data);
-        if (event.data) {
-          let d = JSON.parse(event.data);
-          if (d.type == "send_location") {
-            let l = JSON.parse(d.location_data.current_location);
-            set((state) => ({
-              location: {
-                lat: l.lat,
-                lng: l.lng
-              }
-            }))
-          }
-        }
-
-        set((state) => ({
-          data: [...state.data, event.data],
-        }));
-      });
-
-      socket.addEventListener("close", () => {
-        console.log("WebSocket connection closed");
-      });
-    },
-    disconnectWebSocket: () => {
-      if (socket) {
-        socket.close();
-      }
-    },
-    sendWebSocket: (message: any) => {
-      if (socket) {
-        socket.send(message);
-      }
-    },
-    location: { lat: null, lng: null }
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
   };
 
-  set(initialState);
+  const disconnectWebSocket = () => {
+    socket?.close();
+  };
 
-  return initialState;
+  const sendWebSocket = (message: string) => {
+    socket?.send(message);
+  };
+
+  return {
+    messages: [],
+    connectWebSocket,
+    disconnectWebSocket,
+    sendWebSocket,
+  };
 });
 
 export default useUserSocketStore;
