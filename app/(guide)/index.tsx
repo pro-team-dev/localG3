@@ -70,10 +70,8 @@ const Guide = () => {
     }
     getPending();
   }, [reRender, render]);
-  const { logout } = useAuth();
   return (
     <View>
-      <CustomButton onPress={logout} title="Logout" />
       <ScrollView style={{ height: Dimensions.get("window").height - 180 }}>
         {data && data.length > 0 ? (
           data.map((item, index) => {
@@ -82,7 +80,7 @@ const Guide = () => {
             );
           })
         ) : (
-          <Text>No Pending Tours</Text>
+          <Text style={{ fontSize: 20, textAlign: "center", marginTop: 20 }}>No Pending Tours</Text>
         )}
       </ScrollView>
     </View>

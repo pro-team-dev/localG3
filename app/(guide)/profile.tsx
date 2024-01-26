@@ -26,6 +26,7 @@ import Colors from "../../constants/Colors";
 import languagesData from "../../constants/languages";
 import useAuth from "../hooks/useAuth";
 import { useJwtToken } from "../globalStore/globalStore";
+import CustomButton from "../../components/CustomButton";
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState<string | null>(null);
@@ -94,6 +95,8 @@ const Profile: React.FC = () => {
     Alert.alert("Success", "Profile Updated");
     setIsEdit(!isEdit);
   };
+  const { logout } = useAuth();
+
 
   return (
     <ScrollView style={{ height: Dimensions.get("window").height }}>
@@ -300,6 +303,8 @@ const Profile: React.FC = () => {
             />
           </View>
         </ScrollView>
+        <CustomButton onPress={logout} title="Logout" />
+
       </View>
     </ScrollView>
   );
