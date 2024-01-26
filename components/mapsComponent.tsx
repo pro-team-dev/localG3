@@ -30,6 +30,8 @@ const MapsComponent = (props: {
     { lat: number; lng: number }[]
   >([]);
 
+  console.log(props.cameraLocation);
+
   const onMarkerPress = () => {
     setCalloutVisible(true);
   };
