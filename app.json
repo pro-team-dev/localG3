@@ -24,7 +24,10 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.allwcons.localG"
     },
@@ -63,8 +66,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "320b579e-2462-4cc6-9aa8-26556a7be6fa"
+        "projectId": "7fde40af-20a4-4f46-a48f-a0588df55b4f"
       }
-    }
+    },
+    "owner": "pocolocojunior1"
   }
 }
