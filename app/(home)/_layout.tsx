@@ -97,7 +97,6 @@ export default function AppLayout() {
       let result = await data.json();
       if (result.errors) {
         Alert.alert(result.errors.code);
-        logout();
         return;
       }
       connectWebSocket(result.id);
