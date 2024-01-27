@@ -1,6 +1,6 @@
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router/tabs";
-import { Alert, StyleSheet, Text } from "react-native";
+import { Alert, Image, StyleSheet, Text } from "react-native";
 import { View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
@@ -147,8 +147,21 @@ export default function AppLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "LocalG",
             tabBarIcon: () => <AntDesign name="home" size={24} color="black" />,
+            headerLeft(props) {
+              return (
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 10,
+                    marginRight: -10,
+                  }}
+                />
+              );
+            },
+            title: "LocalG",
             headerRight() {
               return (
                 <TouchableOpacity

@@ -55,10 +55,12 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {(locationArr) && <MapsComponent
-          locations={[locationArr]}
-          cameraLocation={[locationArr.lng, locationArr.lat]}
-        />}
+        {locationArr && (
+          <MapsComponent
+            locations={[locationArr]}
+            cameraLocation={[locationArr.lng, locationArr.lat]}
+          />
+        )}
       </View>
       {data && <Card data={data} />}
     </View>
@@ -81,7 +83,9 @@ const Card = ({ data }) => {
         <Text style={styles.text}>
           Food Coverage: {data.food_coverage ? "Yes" : "No"}
         </Text>
-        <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
+        <Text style={styles.text}>
+          Personal Request: {data.personal_request}
+        </Text>
         <Text style={styles.text}>Created At: {data.created_at}</Text>
         <Text style={styles.text}>Updated At: {data.updated_at}</Text>
         <Text style={styles.text}>Tourist: {data.tourist}</Text>

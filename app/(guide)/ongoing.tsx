@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import MapsComponent from "../../components/mapsComponent";
@@ -53,7 +53,6 @@ const OnGoing = () => {
   }, [locationData]);
 
   return (
-
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
         {locationArr && (
@@ -71,6 +70,39 @@ const OnGoing = () => {
 const Card = (props: { data: any }) => {
   const { data } = props;
   const { jwtToken } = useJwtToken();
+  const [touristUser, setTouristUser] = useState<any>();
+  useEffect(() => {
+    const getTourist = async () => {
+      try {
+        const res = await fetch(
+          `https://api.localg.biz/api/user/profile/${data.tourist}/`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        if (res.status !== 200) {
+          console.log(res);
+          console.log("error");
+          return;
+        }
+
+        const data1 = await res.json();
+        if (data1.errors) {
+          console.log(data1);
+          console.log("error");
+        } else {
+          setTouristUser(data1);
+          console.log(data1.profile);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getTourist();
+  }, [data.tourist]);
   const handleComplte = async () => {
     let data1 = data;
 
@@ -137,6 +169,24 @@ const Card = (props: { data: any }) => {
   return (
     <View style={styles.card}>
       <ScrollView>
+        {touristUser && (
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <Image
+              source={{ uri: touristUser.profile }}
+              style={{
+                width: 50,
+                height: 50,
+                backgroundColor: "rgb(200,200,200)",
+                borderRadius: 200,
+              }}
+            />
+            <View style={{ marginTop: 5, marginBottom: 10 }}>
+              <Text className="text-xl">{touristUser.name}</Text>
+              <Text>{touristUser.email}</Text>
+              <Text>{touristUser.phone || "Not Provided"}</Text>
+            </View>
+          </View>
+        )}
         <Text style={styles.text}>Location: {data.locations[0].name}</Text>
         <Text style={styles.text}>Status: {data.status}</Text>
         <Text style={styles.text}>Price: {data.price}</Text>
@@ -148,8 +198,9 @@ const Card = (props: { data: any }) => {
         <Text style={styles.text}>
           Food Coverage: {data.food_coverage ? "Yes" : "No"}
         </Text>
-        <Text style={styles.text}>Personal Request: {data.personal_request}</Text>
-        <Text style={styles.text}>Tourist: {data.tourist}</Text>
+        <Text style={styles.text}>
+          Personal Request: {data.personal_request}
+        </Text>
         <View
           style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
         >

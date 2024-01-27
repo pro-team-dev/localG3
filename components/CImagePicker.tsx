@@ -23,6 +23,7 @@ export default function UploadImage(props: ImageUploaderProps) {
       allowsEditing: true,
       aspect: [3, 3],
       quality: 0.8,
+      base64: true,
     });
     if (!_image.canceled) {
       setImage(_image.assets[0].uri);
