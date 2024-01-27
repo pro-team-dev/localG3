@@ -167,7 +167,7 @@ function GuideItem(props: {
   };
   const [imageError, setImageError] = useState(false);
   const handleImageError = () => {
-    console.warn("Image failed to load. Loading placeholder image.");
+    // console.warn("Image failed to load. Loading placeholder image.");
     setImageError(true);
   };
   return (
@@ -216,6 +216,37 @@ function GuideItem(props: {
             <Text className="font-medium">Langage: {"         "}</Text> Eng,
             Esp, Nep
           </Text>
+          <Text className="font-light">
+            <Text className="font-medium">No of People: {"  "}</Text>
+            {item.no_of_people}
+          </Text>
+
+          <Text className="font-light w-44">
+            <Text className="font-medium">Personal Request: {"  "}</Text>
+            {item.personal_request}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 5,
+            }}
+          >
+            <Text className="font-medium">Price: Nrs</Text>
+            <TextInput
+              style={{
+                width: 100,
+                height: 30,
+                borderWidth: 1,
+                marginLeft: 10,
+                paddingLeft: 5,
+                borderRadius: 5,
+              }}
+              value={price}
+              onChangeText={(text) => setPrice(text)}
+              defaultValue={item.price}
+            />
+          </View>
           <View
             className="font-light"
             style={{ flexDirection: "row", alignItems: "center" }}
@@ -236,30 +267,6 @@ function GuideItem(props: {
             />
             <Text className="ml-2">Hrs</Text>
           </View>
-          <Text className="font-light">
-            <Text className="font-medium">No of People: {"  "}</Text>
-            {item.no_of_people}
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text className="font-medium">Price: Nrs</Text>
-            <TextInput
-              style={{
-                width: 100,
-                height: 30,
-                borderWidth: 1,
-                marginLeft: 10,
-                paddingLeft: 5,
-                borderRadius: 5,
-              }}
-              value={price}
-              onChangeText={(text) => setPrice(text)}
-              defaultValue={item.price}
-            />
-          </View>
-          <Text className="font-light w-44">
-            <Text className="font-medium">Personal Request: {"  "}</Text>
-            {item.personal_request}
-          </Text>
         </View>
         <View className="right">
           {item.travel_coverage ? (
@@ -277,6 +284,7 @@ function GuideItem(props: {
           onPress={handleReach}
         />
       </View>
+      <Seperator />
     </View>
   );
 }

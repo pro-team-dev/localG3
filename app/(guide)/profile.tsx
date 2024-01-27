@@ -66,6 +66,7 @@ const Profile: React.FC = () => {
       setHourly(user.hourly_rate || 1200);
       setDaily(user.hourly_rate * 8 || 10000);
       setImage(user.profile);
+      setLan(user.languages);
     }
     getUserInfo();
   }, []);
@@ -96,7 +97,6 @@ const Profile: React.FC = () => {
     setIsEdit(!isEdit);
   };
   const { logout } = useAuth();
-
 
   return (
     <ScrollView style={{ height: Dimensions.get("window").height }}>
@@ -304,7 +304,6 @@ const Profile: React.FC = () => {
           </View>
         </ScrollView>
         <CustomButton onPress={logout} title="Logout" />
-
       </View>
     </ScrollView>
   );

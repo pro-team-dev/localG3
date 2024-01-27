@@ -11,6 +11,7 @@ const OnGoing = () => {
   const [data, setData] = useState<any>();
   const { jwtToken } = useJwtToken();
   const { data: render, location } = useUserSocketStore();
+  const [reRender, setReRender] = useState(false);
 
   useEffect(() => {
     async function getOnGoing() {
@@ -69,7 +70,7 @@ const OnGoing = () => {
         )}
       </View>
       {data ? (
-        <Card data={data} />
+        <Card data={data} setReRender={setReRender} />
       ) : (
         <Text className="text-xl mt-10 mx-auto">No Ongoing Tours</Text>
       )}
@@ -77,7 +78,7 @@ const OnGoing = () => {
   );
 };
 
-const Card = ({ data }) => {
+const Card = ({ data, setReRender }) => {
   const { jwtToken } = useJwtToken();
 
   const handleCancel = async () => {
@@ -98,6 +99,7 @@ const Card = ({ data }) => {
     let result = await res.json();
     if (result.status === "success") {
       Alert.alert("Tour cancelled");
+      setReRender((prev) => !prev);
     } else {
       Alert.alert("Error in cancelling tour");
     }

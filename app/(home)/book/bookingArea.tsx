@@ -6,6 +6,10 @@ import {
   TextInput,
   Switch,
   Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Dimensions,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
@@ -51,22 +55,23 @@ const BookingArea = () => {
   const [selected, setSelected] = useState(undefined);
   const { jwtToken } = useJwtToken();
   let { location, getLocationCity } = useLocation();
+  const [duration, setDuration] = useState<string | null>(null);
+  const [price, setPrice] = useState("200");
+  const [specialRequest, setSpecialRequest] = useState("");
 
   const handleSearch = async () => {
     try {
       let city = await getLocationCity();
 
       let data = {
-        // anuj
         location: city.toLowerCase(),
         no_of_people: numberOfPeople,
         travel_coverage: travelCoverage,
         food_coverage: foodCoverage,
         language: selectedLanguages.map((item) => item.name),
-        // anuj
-        personal_request: "Any special requests or notes for the tour.",
-        // anuj
-        price: 200,
+        personal_request: specialRequest,
+        price: price,
+        duration: duration,
         locations: locationStore.locations.map((item) => {
           return { name: item.text, lat: item.lat, lng: item.lng };
         }),
@@ -93,105 +98,184 @@ const BookingArea = () => {
 
   return (
     <View>
-      <CustomHeader
-        onBackPress={() => {
-          router.replace("/book/");
-        }}
-      />
-      <View className="p-4">
-        <View>
-          <Text className="text-xl mb-5">Destinations</Text>
-          <View style={{ gap: 10, flexDirection: "row", marginBottom: 20 }}>
-            {locationStore.locations.map((item) => (
-              <LocationCard key={item.id} item={item} />
-            ))}
-          </View>
-          <View className="mt-5">
-            <View
-              style={{
-                backgroundColor: "rgb(230,230,230)",
-                padding: 16,
-                borderRadius: 10,
-                gap: 10,
-              }}
-            >
-              <View
-                className="flex-row items-center"
-                style={{
-                  borderBottomWidth: 1,
-                  paddingBottom: 10,
-                  borderBottomColor: "rgba(200,200,200,0.7)",
-                }}
-              >
-                <Text className="text-lg">No of People:</Text>
-                <TextInput
-                  keyboardType="number-pad"
-                  style={{
-                    marginLeft: "auto",
-                    width: 50,
-                    borderRadius: 10,
-                    backgroundColor: "rgb(230,230,230)",
-                    textAlign: "center",
-                  }}
-                  value={numberOfPeople.toString()}
-                  onChangeText={(text) =>
-                    setNumberOfPeople(
-                      isNaN(parseInt(text)) ? 0 : parseInt(text)
-                    )
-                  }
-                />
-              </View>
-              <View
-                className="flex-row items-center justify-between"
-                style={{
-                  borderBottomWidth: 1,
-                  paddingBottom: 10,
-                  borderBottomColor: "rgba(200,200,200,0.7)",
-                }}
-              >
-                <Text className="text-lg">Language</Text>
-                <LanguageSelector
-                  setSelectedLanguages={setSelectedLanguages}
-                  selectedLanguages={selectedLanguages}
-                />
-              </View>
-              <View
-                className="flex-row items-center justify-between"
-                style={{
-                  borderBottomWidth: 1,
-                  paddingBottom: 15,
-                  paddingTop: 10,
-                  borderBottomColor: "rgba(200,200,200,0.7)",
-                  paddingRight: 10,
-                }}
-              >
-                <Text className="text-lg">Travel Coverage</Text>
-                <Switch
-                  value={travelCoverage}
-                  onValueChange={setTravelCoverage}
-                />
-              </View>
-              <View
-                className="flex-row items-center justify-between"
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "rgba(200,200,200,0.7)",
-                  paddingBottom: 15,
-                  paddingTop: 10,
-                  paddingRight: 10,
-                }}
-              >
-                <Text className="text-lg">Food Coverage</Text>
-                <Switch value={foodCoverage} onValueChange={setFoodCoverage} />
-              </View>
-            </View>
-          </View>
+      <View style={{ height: Dimensions.get("window").height - 130 }}>
+        <CustomHeader
+          onBackPress={() => {
+            router.replace("/book/");
+          }}
+        />
+        <View className="p-4">
           <View>
-            <CustomButton
-              title="Search"
-              style={{ marginTop: 20, marginLeft: "auto" }}
-              onPress={() => handleSearch()}
-            />
+            <Text className="text-xl mb-5">Destinations</Text>
+            <View style={{ gap: 10, flexDirection: "row", marginBottom: 20 }}>
+              {locationStore.locations.map((item) => (
+                <LocationCard key={item.id} item={item} />
+              ))}
+            </View>
+            <KeyboardAvoidingView className="mt-5" behavior="height">
+              <View
+                style={{
+                  backgroundColor: "rgb(230,230,230)",
+                  padding: 16,
+                  borderRadius: 10,
+                  gap: 10,
+                }}
+              >
+                <View
+                  className="flex-row items-center"
+                  style={{
+                    borderBottomWidth: 1,
+                    paddingBottom: 10,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                  }}
+                >
+                  <Text className="text-lg">No of People:</Text>
+                  <TextInput
+                    keyboardType="number-pad"
+                    style={{
+                      marginLeft: "auto",
+                      width: 50,
+                      borderRadius: 10,
+                      backgroundColor: "rgb(230,230,230)",
+                      textAlign: "center",
+                    }}
+                    value={numberOfPeople.toString()}
+                    onChangeText={(text) =>
+                      setNumberOfPeople(
+                        isNaN(parseInt(text)) ? 0 : parseInt(text)
+                      )
+                    }
+                  />
+                </View>
+                <View
+                  className="flex-row items-center justify-between"
+                  style={{
+                    borderBottomWidth: 1,
+                    paddingBottom: 10,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                  }}
+                >
+                  <Text className="text-lg">Language</Text>
+                  <LanguageSelector
+                    setSelectedLanguages={setSelectedLanguages}
+                    selectedLanguages={selectedLanguages}
+                  />
+                </View>
+                <View
+                  className="flex-row items-center"
+                  style={{
+                    borderBottomWidth: 1,
+                    paddingBottom: 10,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text className="text-lg">Duration:</Text>
+                  <View style={{ alignItems: "center", flexDirection: "row" }}>
+                    <TextInput
+                      keyboardType="number-pad"
+                      style={{
+                        marginLeft: "auto",
+                        width: 50,
+                        borderRadius: 10,
+                        backgroundColor: "rgb(250,250,250)",
+                        marginRight: 10,
+                        textAlign: "center",
+                      }}
+                      value={duration ?? ""}
+                      onChangeText={(text) => setDuration(text)}
+                    />
+                    <Text>Hour</Text>
+                  </View>
+                </View>
+                <View
+                  className="flex-row items-center"
+                  style={{
+                    borderBottomWidth: 1,
+                    paddingBottom: 10,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                  }}
+                >
+                  <Text className="text-lg">Price(Nrs.):</Text>
+                  <TextInput
+                    keyboardType="number-pad"
+                    style={{
+                      marginLeft: "auto",
+                      width: 50,
+                      borderRadius: 10,
+                      backgroundColor: "rgb(250,250,250)",
+                      marginRight: 10,
+                      textAlign: "center",
+                    }}
+                    value={price ?? ""}
+                    onChangeText={(text) => setPrice(text)}
+                  />
+                </View>
+                <View
+                  className="flex-row items-center justify-between"
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                    paddingBottom: 15,
+                    paddingTop: 10,
+                    paddingRight: 10,
+                  }}
+                >
+                  <TextInput
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: "rgb(250,250,250)",
+                      marginRight: 10,
+                      padding: 5,
+                      paddingHorizontal: 10,
+                    }}
+                    multiline={true}
+                    value={specialRequest}
+                    onChangeText={setSpecialRequest}
+                    placeholder="Any Special Request or Notes for the tour."
+                  />
+                </View>
+                <View
+                  className="flex-row items-center justify-between"
+                  style={{
+                    borderBottomWidth: 1,
+                    paddingBottom: 15,
+                    paddingTop: 10,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                    paddingRight: 10,
+                  }}
+                >
+                  <Text className="text-lg">Travel Coverage</Text>
+                  <Switch
+                    value={travelCoverage}
+                    onValueChange={setTravelCoverage}
+                  />
+                </View>
+                <View
+                  className="flex-row items-center justify-between"
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: "rgba(200,200,200,0.7)",
+                    paddingBottom: 15,
+                    paddingTop: 10,
+                    paddingRight: 10,
+                  }}
+                >
+                  <Text className="text-lg">Food Coverage</Text>
+                  <Switch
+                    value={foodCoverage}
+                    onValueChange={setFoodCoverage}
+                  />
+                </View>
+              </View>
+            </KeyboardAvoidingView>
+            <View>
+              <CustomButton
+                title="Search"
+                style={{ marginTop: 20, marginLeft: "auto" }}
+                onPress={() => handleSearch()}
+              />
+            </View>
           </View>
         </View>
       </View>

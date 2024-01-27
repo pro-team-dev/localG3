@@ -9,6 +9,7 @@ import {
   Button,
   Dimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -36,6 +37,7 @@ const Profile: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [lan, setLan] = useState<string[]>([]);
 
   const [userInfo, setUserInfo] = useState<{
     email: string;
@@ -47,22 +49,25 @@ const Profile: React.FC = () => {
   }>();
 
   const handleSave = async () => {
-    // const response = await fetch(`https://api.localg.biz/api/user/profile/`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${jwtToken}`,
-    //   },
-    //   body: JSON.stringify({
-    //     phone_number: number,
-    //     email: email,
-    //   }),
-    // });
-    // const data = await response.json();
-    // if (data.errors) {
-    //   console.log(data.errors);
-    //   return;
-    // }
+    const response = await fetch(`https://api.localg.biz/api/user/profile/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({
+        phone_number: number,
+        email: email,
+        languages: lan,
+      }),
+    });
+    const data = await response.json();
+    if (data.errors) {
+      console.log(data.errors);
+      return;
+    } else {
+      Alert.alert("Profile Updated");
+    }
     setIsEdit(false);
   };
   useEffect(() => {
@@ -82,6 +87,7 @@ const Profile: React.FC = () => {
       setImage(data.profile);
       setEmail(data.email);
       setNumber(data.phone_number || "XXXXXXXXXX");
+      setLan(data.languages);
     };
     getUserInfo();
   }, []);
@@ -195,7 +201,7 @@ const Profile: React.FC = () => {
           <Seperator />
           <View className="w-full">
             <Text className="text-xl">Languages</Text>
-            <Languages isEdit={isEdit} />
+            <Languages isEdit={isEdit} lan={lan} setLan={setLan} />
           </View>
         </View>
       </View>
