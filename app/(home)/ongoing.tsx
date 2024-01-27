@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import useUserSocketStore from "../globalStore/websocketStore";
 import MapsComponent from "../../components/mapsComponent";
 import { ScrollView } from "react-native-gesture-handler";
 import CustomButton from "../../components/CustomButton";
+import { Image } from "react-native";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -30,7 +31,9 @@ const OnGoing = () => {
 
         const data1 = await res.json();
         if (data1.status === "success") {
-          setData(data1.tour);
+          if (data1.tour.locations) {
+            setData(data1.tour);
+          }
         } else {
           console.log("error");
         }
@@ -65,18 +68,45 @@ const OnGoing = () => {
           <MapsComponent />
         )}
       </View>
-      {data && <Card data={data} />}
+      {data ? (
+        <Card data={data} />
+      ) : (
+        <Text className="text-xl mt-10 mx-auto">No Ongoing Tours</Text>
+      )}
     </View>
   );
 };
 
 const Card = ({ data }) => {
+  const { jwtToken } = useJwtToken();
+
+  const handleCancel = async () => {
+    let res = await fetch(`https://api.localg.biz/api/user/cancel-tour/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tour_id: data.tour_id,
+      }),
+    });
+    if (res.status !== 200) {
+      console.log("Error in cancelling tour");
+      return;
+    }
+    let result = await res.json();
+    if (result.status === "success") {
+      Alert.alert("Tour cancelled");
+    } else {
+      Alert.alert("Error in cancelling tour");
+    }
+  };
   return (
     <View style={styles.card}>
       <ScrollView>
-        <Text style={styles.text}>Tour ID: {data.tour_id}</Text>
+        <GuideProfile id={data.tourist} />
         <Text style={styles.text}>Location: {data.locations[0].name}</Text>
-        <Text style={styles.text}>Status: {data.status}</Text>
         <Text style={styles.text}>Price: {data.price}</Text>
         <Text style={styles.text}>Duration: {data.duration}</Text>
         <Text style={styles.text}>No. of People: {data.no_of_people}</Text>
@@ -86,32 +116,81 @@ const Card = ({ data }) => {
         <Text style={styles.text}>
           Food Coverage: {data.food_coverage ? "Yes" : "No"}
         </Text>
-        <Text style={styles.text}>
+        <Text style={[styles.text, { marginRight: 20 }]}>
           Personal Request: {data.personal_request}
         </Text>
-        <Text style={styles.text}>Created At: {data.created_at}</Text>
-        <Text style={styles.text}>Updated At: {data.updated_at}</Text>
-        <Text style={styles.text}>Tourist: {data.tourist}</Text>
-        <Text style={styles.text}>Guide: {data.guide}</Text>
-        <Text style={styles.text}>Offer: {data.offer[0]}</Text>
         <View
           style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
         >
           <CustomButton
-            style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
+            style={{
+              width: 100,
+              backgroundColor: "rgb(200,100,100)",
+              marginRight: 10,
+            }}
             title="Cancel"
-            // onPress={() => handleCancel()}
-          />
-          <CustomButton
-            style={{ width: 150 }}
-            title="Complete"
-            // onPress={() => handleComplte()}
+            onPress={() => handleCancel()}
           />
         </View>
       </ScrollView>
     </View>
   );
 };
+
+function GuideProfile(props: { id: number }) {
+  const [data, setData] = useState<any>();
+  const { jwtToken } = useJwtToken();
+
+  useEffect(() => {
+    async function getGuide() {
+      try {
+        const res = await fetch(
+          `https://api.localg.biz/api/user/profile/${props.id}/`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        if (res.status !== 200) {
+          console.log("Erro in ongoing.tsx(home)");
+          return;
+        }
+
+        const data1 = await res.json();
+        //anuj
+        setData(data1);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getGuide();
+  }, []);
+
+  return (
+    <View style={{ flexDirection: "row", gap: 10 }}>
+      {data && (
+        <>
+          <Image
+            source={{ uri: data.profile }}
+            style={{
+              width: 50,
+              height: 50,
+              backgroundColor: "rgb(200,200,200)",
+              borderRadius: 200,
+            }}
+          />
+          <View style={{ marginTop: 5, marginBottom: 10 }}>
+            <Text className="text-xl">{data.name}</Text>
+            <Text>{data.email}</Text>
+          </View>
+        </>
+      )}
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   card: {

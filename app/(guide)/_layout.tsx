@@ -95,17 +95,19 @@ export default function AppLayout() {
   const sendLocation = async () => {
     try {
       await locate();
-      sendWebSocket(
-        JSON.stringify({
-          tour_id: tour.tour_id,
-          location_data: {
-            current_location: JSON.stringify({
-              lat: location?.coords.latitude,
-              lng: location?.coords.longitude,
-            }),
-          },
-        })
-      );
+      if (tour && tour.tour_id) {
+        sendWebSocket(
+          JSON.stringify({
+            tour_id: tour.tour_id,
+            location_data: {
+              current_location: JSON.stringify({
+                lat: location?.coords.latitude,
+                lng: location?.coords.longitude,
+              }),
+            },
+          })
+        );
+      }
     } catch (e) {
       console.log(e);
     }

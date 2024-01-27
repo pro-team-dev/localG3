@@ -30,10 +30,13 @@ const OnGoing = () => {
         }
 
         const data1 = await res.json();
+        console.log(data1);
         if (data1.status === "success") {
-          setData(data1.tour);
+          if (data1.tour.locations) {
+            setData(data1.tour);
+          }
         } else {
-          console.log("error");
+          console.log(data1);
         }
       } catch (error) {
         console.log(error);
@@ -43,19 +46,18 @@ const OnGoing = () => {
     getOnGoing();
   }, [render]);
 
-  let [locationArr, setLocationArr] = useState<any>();
+  let [locationArr, setLocationArr] = useState<any>({ lat: null, lng: null });
 
   useEffect(() => {
     if (locationData) {
       setLocationArr(locationData);
-      console.log(locationData);
     }
   }, [locationData]);
 
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {locationArr ? (
+        {locationArr && locationArr.lat ? (
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
@@ -64,7 +66,11 @@ const OnGoing = () => {
           <MapsComponent />
         )}
       </View>
-      {data && <Card data={data} />}
+      {data ? (
+        <Card data={data} />
+      ) : (
+        <Text className="text-xl mt-10 mx-auto">No Ongoing Tours</Text>
+      )}
     </View>
   );
 };

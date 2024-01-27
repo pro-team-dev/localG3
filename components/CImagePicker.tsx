@@ -26,7 +26,7 @@ export default function UploadImage(props: ImageUploaderProps) {
       base64: true,
     });
     if (!_image.canceled) {
-      setImage(_image.assets[0].uri);
+      setImage(_image.assets[0].base64);
     }
   };
   return (

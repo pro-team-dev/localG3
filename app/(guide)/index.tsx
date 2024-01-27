@@ -1,6 +1,14 @@
 // write initial react native code
 
-import { View, Text, ScrollView, Dimensions, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Dimensions,
+  Image,
+  Alert,
+  TextInput,
+} from "react-native";
 import useAuth from "../hooks/useAuth";
 import CustomButton from "../../components/CustomButton";
 import Seperator from "../../components/seperator";
@@ -31,11 +39,10 @@ const Guide = () => {
           }),
         });
         if (res.status != 200) {
-          console.log(res.toString());
+          console.log("Error in response, index.tsx (guide)");
           return;
         }
         let result = await res.json();
-        console.log(result);
         if (result.errors) {
           console.log(result.errors);
           return;
@@ -80,7 +87,9 @@ const Guide = () => {
             );
           })
         ) : (
-          <Text style={{ fontSize: 20, textAlign: "center", marginTop: 20 }}>No Pending Tours</Text>
+          <Text style={{ fontSize: 20, textAlign: "center", marginTop: 20 }}>
+            No Pending Tours
+          </Text>
         )}
       </ScrollView>
     </View>
@@ -97,6 +106,9 @@ function GuideItem(props: {
   const { tour_id } = item;
   const [touristData, setTouristData] = useState<any>();
   const { jwtToken } = useJwtToken();
+  const [price, setPrice] = useState(item.price);
+  const [profileImg, setProfileImg] = useState<any>();
+  const [duration, setDuration] = useState(item.duration);
   useEffect(() => {
     async function getTouristData() {
       try {
@@ -119,6 +131,7 @@ function GuideItem(props: {
           console.log(data1);
         } else {
           setTouristData(data1);
+          setProfileImg({ image: data1.profile });
         }
       } catch (error) {
         console.log(error);
@@ -138,8 +151,8 @@ function GuideItem(props: {
         },
         body: JSON.stringify({
           tour_id: tour_id,
-          price: item.price,
-          duration: 200,
+          price: price,
+          duration: duration,
         }),
       }
     );
@@ -152,14 +165,29 @@ function GuideItem(props: {
     Alert.alert("Tourist will be notified");
     props.setReRender((prev) => !prev);
   };
+  const [imageError, setImageError] = useState(false);
+  const handleImageError = () => {
+    console.warn("Image failed to load. Loading placeholder image.");
+    setImageError(true);
+  };
   return (
     <View className="p-4">
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
         {touristData && touristData.profile ? (
-          <Image
-            source={{ uri: touristData.profile }}
-            style={{ height: 50, width: 50, borderRadius: 100 }}
-          />
+          <>
+            {imageError ? (
+              <Image
+                source={require("../../assets/images/avatar.png")}
+                style={{ height: 50, width: 50, borderRadius: 100 }}
+              />
+            ) : (
+              <Image
+                source={{ uri: touristData.profile }}
+                onError={handleImageError}
+                style={{ height: 50, width: 50, borderRadius: 100 }}
+              />
+            )}
+          </>
         ) : null}
         <View>
           <Text className="text-xl font-semibold">
@@ -188,18 +216,46 @@ function GuideItem(props: {
             <Text className="font-medium">Langage: {"         "}</Text> Eng,
             Esp, Nep
           </Text>
-          <Text className="font-light">
-            <Text className="font-medium">Time: {"               "}</Text> Eng,
-            Esp, Nep
-          </Text>
+          <View
+            className="font-light"
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <Text className="font-medium">Duration:</Text>
+            <TextInput
+              style={{
+                width: 100,
+                height: 30,
+                borderWidth: 1,
+                marginLeft: 10,
+                paddingLeft: 5,
+                borderRadius: 5,
+              }}
+              value={duration}
+              onChangeText={(text) => setDuration(text)}
+              defaultValue={item.duration}
+            />
+            <Text className="ml-2">Hrs</Text>
+          </View>
           <Text className="font-light">
             <Text className="font-medium">No of People: {"  "}</Text>
             {item.no_of_people}
           </Text>
-          <Text className="font-light">
-            <Text className="font-medium">Price: {"  "}</Text>
-            {item.price}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text className="font-medium">Price: Nrs</Text>
+            <TextInput
+              style={{
+                width: 100,
+                height: 30,
+                borderWidth: 1,
+                marginLeft: 10,
+                paddingLeft: 5,
+                borderRadius: 5,
+              }}
+              value={price}
+              onChangeText={(text) => setPrice(text)}
+              defaultValue={item.price}
+            />
+          </View>
           <Text className="font-light w-44">
             <Text className="font-medium">Personal Request: {"  "}</Text>
             {item.personal_request}

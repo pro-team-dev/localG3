@@ -68,11 +68,15 @@ const TourDetail = (props: {
         );
         const data = await res.json();
         if (data.status === "success") {
-          // console.log(data);
-          setTourDetail(data.pending_tours[0]);
-          props.setTourId(data.pending_tours[0].tour_id);
-          if (data.pending_tours[0].status === "pending") {
-            props.setIsPending(true);
+          if (data.pending_tours && data.pending_tours.length > 0) {
+            setTourDetail(data.pending_tours[0]);
+            props.setTourId(data.pending_tours[0].tour_id);
+            if (data.pending_tours[0].status === "pending") {
+              props.setIsPending(true);
+            }
+          } else {
+            console.log("no pending tours");
+            props.setIsPending(false);
           }
         } else {
           console.log("error");
@@ -214,11 +218,13 @@ const OfferItem = (props) => {
           {
             method: "GET",
             headers: {
-              // anuj
               Authorization: `Bearer ${jwtToken}`,
             },
           }
         );
+        if (res.status != 200) {
+          console.log("res error, in offers.tsx(home)", res.status);
+        }
         const data = await res.json();
         if (data.errors) {
           console.log(data);
