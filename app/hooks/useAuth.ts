@@ -181,10 +181,6 @@ const useAuth = () => {
           Authorization: `Bearer ${userToken}`,
         },
       });
-      if (res.status != 200) {
-        logout();
-        return;
-      }
       let data = await res.json();
       if (data.errors) {
         if (data.errors.code == "token_not_valid") {

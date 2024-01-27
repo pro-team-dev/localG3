@@ -112,11 +112,11 @@ export default function AppLayout() {
     };
   }, []);
 
-  const [count, setCount] = useState(0);
   useEffect(() => {
-    if (data && count > 0) {
-      setShowNotification(true);
-      setCount(1);
+    if (data) {
+      if (!data.type) {
+        // setShowNotification(true);
+      }
       const timer = setTimeout(() => {
         setShowNotification(false);
       }, 5000);
@@ -167,7 +167,8 @@ export default function AppLayout() {
             backgroundColor: "rgb(100,150,100)",
             position: "absolute",
             right: 0,
-            top: StatusBar.currentHeight * 3,
+            left: 0,
+            top: StatusBar.currentHeight * 3 - 20,
             padding: 10,
             zIndex: 1,
           }}

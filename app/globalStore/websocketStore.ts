@@ -5,7 +5,7 @@ interface UserSocketStore {
   connectWebSocket: (userId: string) => void;
   disconnectWebSocket: () => void;
   sendWebSocket: (message: any) => void;
-  location: { lat: number | null, lng: number | null };
+  location: { lat: number | null; lng: number | null };
 }
 
 const useUserSocketStore = create<UserSocketStore>((set) => {
@@ -14,7 +14,7 @@ const useUserSocketStore = create<UserSocketStore>((set) => {
   const initialState: UserSocketStore = {
     data: [],
     connectWebSocket: (userId: string) => {
-      const wsUrl = `ws://api.localg.biz/ws/tourist-tour/${userId}`;
+      const wsUrl = `wss://api.localg.biz/ws/tourist-tour/${userId}`;
 
       socket = new WebSocket(wsUrl);
 
@@ -32,9 +32,9 @@ const useUserSocketStore = create<UserSocketStore>((set) => {
             set((state) => ({
               location: {
                 lat: l.lat,
-                lng: l.lng
-              }
-            }))
+                lng: l.lng,
+              },
+            }));
           }
         }
 
@@ -57,7 +57,7 @@ const useUserSocketStore = create<UserSocketStore>((set) => {
         socket.send(message);
       }
     },
-    location: { lat: null, lng: null }
+    location: { lat: null, lng: null },
   };
 
   set(initialState);

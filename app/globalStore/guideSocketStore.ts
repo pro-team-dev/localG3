@@ -14,7 +14,7 @@ const useGuideUserSocketStore = create<GuideUserSocketStore>((set) => {
   const initialState: GuideUserSocketStore = {
     data: [],
     connectWebSocket: (userId: string) => {
-      const wsUrl = `ws://api.localg.biz/ws/guide-tour/${userId}`;
+      const wsUrl = `wss://api.localg.biz/ws/guide-tour/${userId}`;
 
       socket = new WebSocket(wsUrl);
 

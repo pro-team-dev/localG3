@@ -12,6 +12,7 @@ import { useJwtToken } from "../globalStore/globalStore";
 import { useEffect, useState } from "react";
 import useTourStore from "../globalStore/tourStore";
 import useLocationTest from "../hooks/useLocationTest";
+import { StatusBar } from "react-native";
 
 export default function AppLayout() {
   const config = {};
@@ -35,8 +36,7 @@ export default function AppLayout() {
           }
         );
         if (res.status !== 200) {
-          console.log(res);
-          console.log("error");
+          console.log("Error in _layout(home)");
           return;
         }
 
@@ -48,7 +48,7 @@ export default function AppLayout() {
           console.log("error");
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error in line 50, _layout(home)");
       }
     };
     getOnGoing();
@@ -109,11 +109,11 @@ export default function AppLayout() {
     };
   }, []);
 
-  const [count, setCount] = useState(0);
   useEffect(() => {
-    if (data && count > 0) {
-      setShowNotification(true);
-      setCount(1);
+    if (data) {
+      if (!data.type) {
+        // setShowNotification(true);
+      }
       const timer = setTimeout(() => {
         setShowNotification(false);
       }, 5000);
@@ -129,7 +129,8 @@ export default function AppLayout() {
             backgroundColor: "rgb(100,150,100)",
             position: "absolute",
             right: 0,
-            top: 0,
+            left: 0,
+            top: StatusBar.currentHeight * 3 - 20,
             padding: 10,
             zIndex: 1,
           }}
