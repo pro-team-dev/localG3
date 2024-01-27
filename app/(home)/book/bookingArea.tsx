@@ -11,7 +11,7 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import type { locationType } from "../book";
@@ -58,21 +58,30 @@ const BookingArea = () => {
   const [duration, setDuration] = useState<string | null>(null);
   const [price, setPrice] = useState("200");
   const [specialRequest, setSpecialRequest] = useState("");
+  const [city, setCity] = useState("");
+  useEffect(() => {
+    async function setLocationCity() {
+      try {
+        let city = await getLocationCity();
+        setCity(city);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setLocationCity();
+  }, [location]);
 
   const handleSearch = async () => {
     try {
-      let city = await getLocationCity();
-      console.log(1);
-
       let data = {
-        location: city.toLowerCase(),
+        location: "lalitpur",
         no_of_people: numberOfPeople,
         travel_coverage: travelCoverage,
         food_coverage: foodCoverage,
         language: selectedLanguages.map((item) => item.name),
         personal_request: specialRequest,
         price: price,
-        duration: duration,
+        duration: duration ? duration : "",
         locations: locationStore.locations.map((item) => {
           return { name: item.text, lat: item.lat, lng: item.lng };
         }),

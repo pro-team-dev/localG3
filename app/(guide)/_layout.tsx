@@ -19,6 +19,41 @@ export default function AppLayout() {
     useGuideUserSocketStore();
   const [showNotification, setShowNotification] = useState(false);
 
+  const { location: l, getLocationCity } = useLocation();
+  useEffect(() => {
+    async function getLocation() {
+      try {
+        console.log("0");
+        let city: string = "lalitpur";
+        let res = await fetch("https://api.localg.biz/api/user/profile/", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            location: city.toLowerCase(),
+          }),
+        });
+        console.log("2");
+        if (res.status != 200) {
+          console.log("Error in response, index.tsx (guide)");
+          return;
+        }
+        let result = await res.json();
+        console.log("1");
+        if (result.errors) {
+          console.log(result);
+          return;
+        }
+      } catch (error) {
+        console.log("Please stop");
+        // getLocation();
+      }
+    }
+    getLocation();
+  }, []);
+
   const tour = useTourStore();
   useEffect(() => {
     const getOnGoing = async () => {
@@ -66,7 +101,6 @@ export default function AppLayout() {
       let result = await data.json();
       if (result.errors) {
         Alert.alert(result.errors.code);
-        logout();
         return;
       }
       connectWebSocket(result.id);
@@ -98,6 +132,7 @@ export default function AppLayout() {
       if (tour && tour.tour_id) {
         sendWebSocket(
           JSON.stringify({
+            type: "location",
             tour_id: tour.tour_id,
             location_data: {
               current_location: JSON.stringify({

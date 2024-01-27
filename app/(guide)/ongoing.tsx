@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import MapsComponent from "../../components/mapsComponent";
@@ -11,6 +11,7 @@ const OnGoing = () => {
   const [data, setData] = useState<any>();
   const { jwtToken } = useJwtToken();
   const { data: render, location: locationData } = useGuideUserSocketStore();
+  const [reRender, setReRender] = useState(false);
 
   useEffect(() => {
     async function getOnGoing() {
@@ -30,10 +31,11 @@ const OnGoing = () => {
         }
 
         const data1 = await res.json();
-        console.log(data1);
         if (data1.status === "success") {
           if (data1.tour.locations) {
             setData(data1.tour);
+          } else {
+            setData(undefined);
           }
         } else {
           console.log(data1);
@@ -44,7 +46,7 @@ const OnGoing = () => {
     }
 
     getOnGoing();
-  }, [render]);
+  }, [render, reRender]);
 
   let [locationArr, setLocationArr] = useState<any>({ lat: null, lng: null });
 
@@ -52,7 +54,7 @@ const OnGoing = () => {
     if (locationData) {
       setLocationArr(locationData);
     }
-  }, [locationData]);
+  }, [locationData, render]);
 
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
@@ -67,7 +69,7 @@ const OnGoing = () => {
         )}
       </View>
       {data ? (
-        <Card data={data} />
+        <Card setReRender={setReRender} reRender={reRender} data={data} />
       ) : (
         <Text className="text-xl mt-10 mx-auto">No Ongoing Tours</Text>
       )}
@@ -75,7 +77,7 @@ const OnGoing = () => {
   );
 };
 
-const Card = (props: { data: any }) => {
+const Card = (props: { data: any; setReRender: any; reRender: any }) => {
   const { data } = props;
   const { jwtToken } = useJwtToken();
   const [touristUser, setTouristUser] = useState<any>();
@@ -110,7 +112,7 @@ const Card = (props: { data: any }) => {
       }
     };
     getTourist();
-  }, [data.tourist]);
+  }, [data.tourist, props.reRender]);
   const handleComplte = async () => {
     let data1 = data;
 
@@ -121,6 +123,7 @@ const Card = (props: { data: any }) => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             tour_id: data1.tour_id,
@@ -133,7 +136,8 @@ const Card = (props: { data: any }) => {
       }
       const data = await res.json();
       if (data.status === "success") {
-        console.log("success");
+        Alert.alert("Success", "Tour Completed");
+        props.setReRender(!props.reRender);
       } else {
         console.log(data);
         console.log("error");
@@ -152,6 +156,7 @@ const Card = (props: { data: any }) => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             tour_id: data1.tour_id,
@@ -164,7 +169,8 @@ const Card = (props: { data: any }) => {
       }
       const data = await res.json();
       if (data.status === "success") {
-        console.log("success");
+        Alert.alert("Success", "Tour Cancelled");
+        props.setReRender(!props.reRender);
       } else {
         if (!data) console.log(undefined);
 

@@ -42,7 +42,9 @@ const Guide = () => {
       if (locationSearch.length > 0) {
         let key = process.env.EXPO_PUBLIC_OPENCAGE_API_KEY;
         setIsloading(true);
+        console.log(1);
         let data = await opencage.geocode({ key, q: locationSearch });
+        console.log(2);
         let result = data.results;
         let o = result.map((res: any, index: number) => ({
           id: index,

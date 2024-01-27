@@ -24,35 +24,7 @@ const Guide = () => {
   const { location, getLocationCity } = useLocation();
   const [reRender, setReRender] = useState(false);
   const { data: render } = useGuideUserSocketStore();
-  useEffect(() => {
-    async function getLocation() {
-      try {
-        let city: string = await getLocationCity();
-        let res = await fetch("https://api.localg.biz/api/user/profile/", {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            location: city.toLowerCase(),
-          }),
-        });
-        if (res.status != 200) {
-          console.log("Error in response, index.tsx (guide)");
-          return;
-        }
-        let result = await res.json();
-        if (result.errors) {
-          console.log(result.errors);
-          return;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getLocation();
-  }, [location, render]);
+
   useEffect(() => {
     async function getPending() {
       try {

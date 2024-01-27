@@ -79,8 +79,10 @@ const TourDetail = (props: {
         const data = await res.json();
         if (data.status === "success") {
           if (data.pending_tours && data.pending_tours.length > 0) {
-            setTourDetail(data.pending_tours[0]);
-            props.setTourId(data.pending_tours[0].tour_id);
+            setTourDetail(data.pending_tours[data.pending_tours.length - 1]);
+            props.setTourId(
+              data.pending_tours[data.pending_tours.length - 1].tour_id
+            );
             if (data.pending_tours[0].status === "pending") {
               props.setIsPending(true);
             }
@@ -187,6 +189,7 @@ function GuideOffer(props: {
           }
         );
         const data = await res.json();
+        console.log(data);
         if (data.status === "success") {
           setData(data.offers);
         } else {

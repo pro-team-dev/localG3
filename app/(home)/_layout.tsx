@@ -61,6 +61,7 @@ export default function AppLayout() {
       if (tour && tour.tour_id) {
         sendWebSocket(
           JSON.stringify({
+            type: "location",
             tour_id: tour.tour_id,
             location_data: {
               current_location: JSON.stringify({

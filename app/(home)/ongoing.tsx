@@ -34,6 +34,8 @@ const OnGoing = () => {
         if (data1.status === "success") {
           if (data1.tour.locations) {
             setData(data1.tour);
+          } else {
+            setData(undefined);
           }
         } else {
           console.log("error");
@@ -44,7 +46,7 @@ const OnGoing = () => {
     }
 
     getOnGoing(); // Call the function to fetch ongoing tours
-  }, [render]);
+  }, [render, reRender]);
 
   let [locationArr, setLocationArr] = useState<any>();
 
@@ -52,10 +54,9 @@ const OnGoing = () => {
     if (location) {
       if (location.lat) {
         setLocationArr(location);
-        console.log(location);
       }
     }
-  }, [location]);
+  }, [location, render, reRender]);
 
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
@@ -70,7 +71,7 @@ const OnGoing = () => {
         )}
       </View>
       {data ? (
-        <Card data={data} setReRender={setReRender} />
+        <Card reRender={reRender} data={data} setReRender={setReRender} />
       ) : (
         <Text className="text-xl mt-10 mx-auto">No Ongoing Tours</Text>
       )}
@@ -78,9 +79,8 @@ const OnGoing = () => {
   );
 };
 
-const Card = ({ data, setReRender }) => {
+const Card = ({ data, setReRender, reRender }) => {
   const { jwtToken } = useJwtToken();
-
   const handleCancel = async () => {
     let res = await fetch(`https://api.localg.biz/api/user/cancel-tour/`, {
       method: "POST",
@@ -107,7 +107,7 @@ const Card = ({ data, setReRender }) => {
   return (
     <View style={styles.card}>
       <ScrollView>
-        <GuideProfile id={data.tourist} />
+        <GuideProfile id={data.guide} />
         <Text style={styles.text}>Location: {data.locations[0].name}</Text>
         <Text style={styles.text}>Price: {data.price}</Text>
         <Text style={styles.text}>Duration: {data.duration}</Text>
