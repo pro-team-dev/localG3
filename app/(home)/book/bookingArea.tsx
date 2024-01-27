@@ -91,7 +91,7 @@ const BookingArea = () => {
         return;
       }
       router.replace({
-        pathname: "/home/offers",
+        pathname: "/offers",
         params: {
           isReRender: "true",
         },
