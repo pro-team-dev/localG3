@@ -55,11 +55,13 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {locationArr && (
+        {locationArr ? (
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
           />
+        ) : (
+          <MapsComponent />
         )}
       </View>
       {data && <Card data={data} />}
