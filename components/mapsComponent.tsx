@@ -70,8 +70,8 @@ const MapsComponent = (props: {
                       coordinate={[location.lng, location.lat]}
                       title="Your location"
                     >
-                      <View className="w-14 h-14 bg-blue-600/[0.2] rounded-full justify-center items-center border-[1.3px] border-blue-400">
-                        <View className="w-3 h-3 bg-blue-600 rounded-full"></View>
+                      <View className="w-14 h-14 bg-red-600/[0.2] rounded-full justify-center items-center border-[1.3px] border-red-400">
+                        <View className="w-3 h-3 bg-red-600 rounded-full"></View>
                       </View>
                     </PointAnnotation>
                   );
