@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Dimensions, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import MapsComponent from "../../components/mapsComponent";
@@ -6,6 +14,7 @@ import useGuideUserSocketStore from "../globalStore/guideSocketStore";
 import CustomButton from "../../components/CustomButton";
 import useLocation from "../hooks/useLocation";
 import { ScrollView } from "react-native-gesture-handler";
+import { AntDesign } from "@expo/vector-icons";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -59,7 +68,7 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {locationArr && locationArr.lat ? (
+        {locationArr && locationArr.lat && data ? (
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
@@ -183,24 +192,35 @@ const Card = (props: { data: any; setReRender: any; reRender: any }) => {
   return (
     <View style={styles.card}>
       <ScrollView>
-        {touristUser && (
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <Image
-              source={{ uri: touristUser.profile }}
-              style={{
-                width: 50,
-                height: 50,
-                backgroundColor: "rgb(200,200,200)",
-                borderRadius: 200,
-              }}
-            />
-            <View style={{ marginTop: 5, marginBottom: 10 }}>
-              <Text className="text-xl">{touristUser.name}</Text>
-              <Text>{touristUser.email}</Text>
-              <Text>{touristUser.phone || "Not Provided"}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {touristUser && (
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Image
+                source={{ uri: touristUser.profile }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  backgroundColor: "rgb(200,200,200)",
+                  borderRadius: 200,
+                }}
+              />
+              <View style={{ marginTop: 5, marginBottom: 10 }}>
+                <Text className="text-xl">{touristUser.name}</Text>
+                <Text>{touristUser.email}</Text>
+                <Text>{touristUser.phone || "Not Provided"}</Text>
+              </View>
             </View>
-          </View>
-        )}
+          )}
+          <TouchableOpacity onPress={() => props.setReRender((c) => !c)}>
+            <AntDesign name="reload1" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.text}>Location: {data.locations[0].name}</Text>
         <Text style={styles.text}>Status: {data.status}</Text>
         <Text style={styles.text}>Price: {data.price}</Text>
@@ -233,6 +253,61 @@ const Card = (props: { data: any; setReRender: any; reRender: any }) => {
     </View>
   );
 };
+
+function GuideProfile(props: { id: number }) {
+  const [data, setData] = useState<any>();
+  const { jwtToken } = useJwtToken();
+
+  useEffect(() => {
+    async function getGuide() {
+      try {
+        const res = await fetch(
+          `https://api.localg.biz/api/user/profile/${props.id}/`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        if (res.status !== 200) {
+          console.log("Erro in ongoing.tsx(home)");
+          return;
+        }
+
+        const data1 = await res.json();
+        //anuj
+        setData(data1);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getGuide();
+  }, []);
+
+  return (
+    <View style={{ flexDirection: "row", gap: 10 }}>
+      {data && (
+        <>
+          <Image
+            source={{ uri: data.profile }}
+            style={{
+              width: 50,
+              height: 50,
+              backgroundColor: "rgb(200,200,200)",
+              borderRadius: 200,
+            }}
+          />
+          <View style={{ marginTop: 5, marginBottom: 10 }}>
+            <Text className="text-xl">{data.name}</Text>
+            <Text>{data.email}</Text>
+          </View>
+        </>
+      )}
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   card: {

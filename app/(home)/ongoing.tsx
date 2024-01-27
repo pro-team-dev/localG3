@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Dimensions, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useJwtToken } from "../globalStore/globalStore";
 import useUserSocketStore from "../globalStore/websocketStore";
@@ -6,6 +13,7 @@ import MapsComponent from "../../components/mapsComponent";
 import { ScrollView } from "react-native-gesture-handler";
 import CustomButton from "../../components/CustomButton";
 import { Image } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -61,7 +69,7 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {locationArr ? (
+        {locationArr && data ? (
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
@@ -107,7 +115,18 @@ const Card = ({ data, setReRender, reRender }) => {
   return (
     <View style={styles.card}>
       <ScrollView>
-        <GuideProfile id={data.guide} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <GuideProfile id={data.guide} />
+          <TouchableOpacity onPress={() => setReRender((c) => !c)}>
+            <AntDesign name="reload1" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.text}>Location: {data.locations[0].name}</Text>
         <Text style={styles.text}>Price: {data.price}</Text>
         <Text style={styles.text}>Duration: {data.duration}</Text>
