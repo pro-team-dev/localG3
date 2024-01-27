@@ -4,6 +4,7 @@ import { useJwtToken } from "../globalStore/globalStore";
 import useUserSocketStore from "../globalStore/websocketStore";
 import MapsComponent from "../../components/mapsComponent";
 import { ScrollView } from "react-native-gesture-handler";
+import CustomButton from "../../components/CustomButton";
 
 const OnGoing = () => {
   const [data, setData] = useState<any>();
@@ -55,11 +56,13 @@ const OnGoing = () => {
   return (
     <View style={{ height: Dimensions.get("window").height / 3 }}>
       <View>
-        {locationArr && (
+        {locationArr ? (
           <MapsComponent
             locations={[locationArr]}
             cameraLocation={[locationArr.lng, locationArr.lat]}
           />
+        ) : (
+          <MapsComponent />
         )}
       </View>
       {data && <Card data={data} />}
@@ -91,6 +94,20 @@ const Card = ({ data }) => {
         <Text style={styles.text}>Tourist: {data.tourist}</Text>
         <Text style={styles.text}>Guide: {data.guide}</Text>
         <Text style={styles.text}>Offer: {data.offer[0]}</Text>
+        <View
+          style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}
+        >
+          <CustomButton
+            style={{ width: 100, backgroundColor: "rgb(200,100,100)" }}
+            title="Cancel"
+            // onPress={() => handleCancel()}
+          />
+          <CustomButton
+            style={{ width: 150 }}
+            title="Complete"
+            // onPress={() => handleComplte()}
+          />
+        </View>
       </ScrollView>
     </View>
   );
