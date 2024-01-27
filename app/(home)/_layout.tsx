@@ -195,6 +195,12 @@ export default function AppLayout() {
           name="offers"
           options={{
             title: "Offers",
+            href: {
+              pathname: "/offers",
+              params: {
+                isReRender: "false",
+              },
+            },
             tabBarIcon: () => (
               <MaterialIcons name="pending-actions" size={24} color="black" />
             ),

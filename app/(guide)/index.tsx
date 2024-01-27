@@ -108,7 +108,7 @@ function GuideItem(props: {
   const { jwtToken } = useJwtToken();
   const [price, setPrice] = useState(item.price);
   const [profileImg, setProfileImg] = useState<any>();
-  const [duration, setDuration] = useState(item.duration);
+  const [duration, setDuration] = useState(item.duration.split(":")[0]);
   useEffect(() => {
     async function getTouristData() {
       try {

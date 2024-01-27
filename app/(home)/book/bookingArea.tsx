@@ -62,6 +62,7 @@ const BookingArea = () => {
   const handleSearch = async () => {
     try {
       let city = await getLocationCity();
+      console.log(1);
 
       let data = {
         location: city.toLowerCase(),
@@ -85,20 +86,24 @@ const BookingArea = () => {
         body: JSON.stringify(data),
       });
       let resJson = await res.json();
-      // console.log(resJson);
       if (resJson.errors) {
         Alert.alert(resJson.errors[0].message);
         return;
       }
-      router.replace("/(home)/offers");
+      router.replace({
+        pathname: "/home/offers",
+        params: {
+          isReRender: "true",
+        },
+      });
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
     }
   };
 
   return (
-    <View>
-      <View style={{ height: Dimensions.get("window").height - 130 }}>
+    <ScrollView style={{ height: Dimensions.get("window").height - 130 }}>
+      <View>
         <CustomHeader
           onBackPress={() => {
             router.replace("/book/");
@@ -279,7 +284,7 @@ const BookingArea = () => {
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

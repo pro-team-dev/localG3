@@ -15,6 +15,8 @@ import Colors from "../../constants/Colors";
 import CustomButton from "../../components/CustomButton";
 import { useJwtToken } from "../globalStore/globalStore";
 import useUserSocketStore from "../globalStore/websocketStore";
+import { useRoute } from "@react-navigation/native";
+import { useLocalSearchParams } from "expo-router";
 
 const Offers = () => {
   const [data, setData] = useState(dummyOffers);
@@ -35,6 +37,7 @@ const Offers = () => {
           setTourId={setTourId}
           reRender={reRender}
           setIsPending={setIsPending}
+          setReRender={setReRender}
         />
         <Seperator />
         {tourId && isPending && (
@@ -48,12 +51,19 @@ const Offers = () => {
 const TourDetail = (props: {
   setTourId: React.Dispatch<React.SetStateAction<number | undefined>>;
   reRender: boolean;
+  setReRender: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPending: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { data: render } = useUserSocketStore();
 
   const [tourDetail, setTourDetail] = useState<any>();
   const { jwtToken } = useJwtToken();
+  const params = useLocalSearchParams();
+  useEffect(() => {
+    if (params.isReRender == "true") {
+      props.setReRender((prev) => !prev);
+    }
+  }, [params]);
   useEffect(() => {
     async function getTourDetail() {
       try {
